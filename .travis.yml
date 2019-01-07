@@ -1,0 +1,18 @@
+language: minimal
+
+services: docker
+
+before_install:
+- export Dimg=scivision/opencoarrays_fortran
+- export Dname=fortran-ubuntu
+- docker run -d --name $Dname -e PATH=$PATH:/root/.local/cmake/bin -v $TRAVIS_BUILD_DIR:/travis -w /travis $Dimg tail -f /dev/null
+
+# prepend $Dcmd to run commands inside the Docker container
+- export Dcmd="docker exec -t $Dname bash -c"
+
+install:
+# for this example, I already installed everything I need in the image previously created by the Dockerfile
+
+script:
+# all commands must be quoted
+- $Dcmd "ctest --build-and-test . build --build-generator 'Unix Makefiles' --test-command ctest"
