@@ -2,10 +2,10 @@ language: minimal
 
 services: docker
 
+env: Dimg=scivision/opencoarrays_fortran; Dname=fortran-ubuntu
+
 before_install:
-- export Dimg=scivision/opencoarrays_fortran
-- export Dname=fortran-ubuntu
-- docker run -d --name $Dname -e PATH=$PATH:/root/.local/cmake/bin -v $TRAVIS_BUILD_DIR:/travis -w /travis $Dimg tail -f /dev/null
+- docker run -d --name $Dname -v $TRAVIS_BUILD_DIR:/travis -w /travis $Dimg tail -f /dev/null
 
 # prepend $Dcmd to run commands inside the Docker container
 - export Dcmd="docker exec -t $Dname bash -c"
