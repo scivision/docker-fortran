@@ -2,10 +2,17 @@ language: minimal
 
 services: docker
 
+git:
+  depth: 3
+  quiet: true
+
 env: Dimg=scivision/opencoarrays_fortran; Dname=fortran-ubuntu
 
 before_install:
-- docker run -d --name $Dname -v $TRAVIS_BUILD_DIR:/travis -w /travis $Dimg tail -f /dev/null
+# Travis UID does not necessarily match 1000:1000 of Docker FIXME will Docker always be 1000:1000
+- sudo chown -R 1000:1000 $TRAVIS_BUILD_DIR
+
+- docker run -d --name $Dname -v $TRAVIS_BUILD_DIR:/home/nonprivuser/travis -w /home/nonprivuser/travis $Dimg tail -f /dev/null
 
 # prepend $Dcmd to run commands inside the Docker container
 - export Dcmd="docker exec -t $Dname bash -c"
@@ -15,4 +22,4 @@ install:
 
 script:
 # all commands must be quoted
-- $Dcmd "ctest --build-and-test . build --build-generator 'Unix Makefiles' --test-command ctest"
+- $Dcmd "cd build && cmake .. && cmake --build . && ctest -V"
